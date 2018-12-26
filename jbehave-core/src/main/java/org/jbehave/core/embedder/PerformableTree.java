@@ -159,6 +159,15 @@ public class PerformableTree {
                     Map<String, String> scenarioParameters = tableRows.get(exampleIndex);
                     Map<String, String> parameters = new HashMap<String, String>(storyExamplesTableRow);
                     parameters.putAll(scenarioParameters);
+                    for (Map.Entry<String, String> scenarioParameterEntry : parameters.entrySet()) {
+                        String value = scenarioParameterEntry.getValue();
+                        for (Map.Entry<String, String> storyParameterEntry: storyExamplesTableRow.entrySet())
+                        {
+                            value = context.configuration().parameterControls().replaceAllDelimitedNames(value,
+                                    storyParameterEntry.getKey(), storyParameterEntry.getValue());
+                        }
+                        scenarioParameterEntry.setValue(value);
+                    }
                     addExampleScenario(context, scenario, performableScenario, lifecycle, storyAndScenarioMeta,
                             parameters, exampleIndex);
                 }
