@@ -18,6 +18,7 @@ public class Lifecycle {
 
     public static final Lifecycle EMPTY = new Lifecycle();
 
+    private ExamplesTable examplesTable;
     private List<Steps> before;
     private List<Steps> after;
     
@@ -25,7 +26,16 @@ public class Lifecycle {
         this(Arrays.<Steps>asList(), Arrays.<Steps>asList());
     }
 
+    public Lifecycle(ExamplesTable examplesTable) {
+        this(examplesTable, Arrays.<Steps>asList(), Arrays.<Steps>asList());
+    }
+
     public Lifecycle(List<Steps> before, List<Steps> after) {
+        this(ExamplesTable.EMPTY, before, after);
+    }
+
+    public Lifecycle(ExamplesTable examplesTable, List<Steps> before, List<Steps> after) {
+        this.examplesTable = examplesTable;
         this.before = before;
         this.after = after;
     }
@@ -35,6 +45,10 @@ public class Lifecycle {
         scopes.add(Scope.SCENARIO);
         scopes.add(Scope.STORY);
         return scopes;
+    }
+
+    public ExamplesTable getExamplesTable() {
+        return examplesTable;
     }
 
     public boolean hasBeforeSteps() {
@@ -55,6 +69,10 @@ public class Lifecycle {
         return beforeSteps;
     }
 
+    public List<Steps> getBefore() {
+        return before;
+    }
+
     public boolean hasAfterSteps() {
         return !getAfterSteps(Scope.SCENARIO).isEmpty() || !getAfterSteps(Scope.STORY).isEmpty() ;
     }
@@ -73,7 +91,11 @@ public class Lifecycle {
         return afterSteps;
     }
 
-    public Set<Outcome> getOutcomes(){
+    public List<Steps> getAfter() {
+        return after;
+    }
+
+    public Set<Outcome> getOutcomes() {
     	Set<Outcome> outcomes = new LinkedHashSet<>();
     	for ( Steps steps : after ){
     		outcomes.add(steps.outcome);
@@ -128,7 +150,7 @@ public class Lifecycle {
 
 
     public boolean isEmpty() {
-        return EMPTY == this;
+        return examplesTable.isEmpty() && before.isEmpty() && after.isEmpty();
     }
 
     @Override
